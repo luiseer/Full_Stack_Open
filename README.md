@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @luiseer
 - 👀 I’m interested in web developer
-- 🌱 I’m currently learning ...
+- 🌱 I’m currently learning web developer full stak
 - 💞️ I’m looking to collaborate on web desing
 - 📫 How to reach me ...
 
