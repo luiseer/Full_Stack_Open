@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 const Header = props => {
   return (
     <h1>
-       Name of course {props.name}
+       name of course {props.name}
     </h1>
   )
 }
@@ -12,7 +12,19 @@ const Header = props => {
 export const Content = props => {
   return (
     <>
-      <p>Part of course, {props.part} number of exercises, {props.exsercises}</p>
+      <Part  part='Fundamentals of React' exsercises={10}/>
+      <Part  part='Using props to pass data' exsercises={7}/>
+      <Part  part='State of a component' exsercises={14}/>
+    </>
+  )
+}
+
+
+
+export const Part = (props) => {
+  return (
+    <>
+     <p>Part of course, {props.part} number of exercises, {props.exsercises}</p>
     </>
   )
 }
@@ -36,9 +48,7 @@ const App = () => {
   return (
     <div>
       <Header name='Half Stack application development'/>
-      <Content part='Fundamentals of React' exsercises={10}/>
-      <Content part='Using props to pass data' exsercises={7}/>
-      <Content part='State of a component' exsercises={14}/>
+      <Content/>
       <Total exercises={10 + 7 + 14}/>
     </div>
   )
