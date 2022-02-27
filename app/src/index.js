@@ -1,4 +1,6 @@
 import ReactDOM from 'react-dom'
+import Counter from './Counter'
+import Examples from './Examples'
 
 const Header = ({ course }) => {
   return (
@@ -61,6 +63,8 @@ const App = (props) => {
      <Header course={course} />
      <Content course={course} />
      <Total course={course} />
+     <Examples/>
+     <Counter/>
    </div>
  )
 }
