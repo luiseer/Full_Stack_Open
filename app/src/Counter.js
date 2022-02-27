@@ -4,6 +4,10 @@ const Counter = () => {
 
     const [counter, setCounter] = useState(0);
 
+    const incraseByOne = () => setCounter(counter + 1)
+    const decraseByOne = () => setCounter(counter - 1)
+    const reset = () => setCounter(0)
+
     console.log('redering..', counter);
 
 
@@ -11,9 +15,9 @@ const Counter = () => {
         <div>
             <h1>Counter</h1>
             <p>{counter}</p>
-            <button onClick={() => setCounter(counter + 1)}>plus</button>
-            <button onClick={() => setCounter(0)}>reset</button>
-            <button onClick={() => setCounter(counter - 1)}>minus</button>
+            <button onClick={incraseByOne}>plus</button>
+            <button onClick={reset}>reset</button>
+            <button onClick={decraseByOne}>minus</button>
         </div>
     )
 }
