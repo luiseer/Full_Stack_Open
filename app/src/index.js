@@ -64,8 +64,6 @@ const App = (props) => {
      <Header course={course} />
      <Content course={course} />
      <Total course={course} />
-     <Counter/>
-     <LeftAndRight/>
    </div>
  )
 }
