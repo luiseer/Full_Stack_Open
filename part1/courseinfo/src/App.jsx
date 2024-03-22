@@ -2,22 +2,22 @@
 const Title = ({course}) => <h1>{course}</h1>
 
 const Content = (props) =>{
+  const totalExercises = props.parts.reduce((total, part) => total + part.exercises, 0);
   console.log(props)
   return(
     <div>
-      <p> Name: {props.name} exercises: {props.exercises}
-      </p>
+      <ul>
+        {props.parts.map((part, index) =>(
+          <li key={index}>
+            {part.name} - {part.exercises}
+          </li>
+        ))}
+      </ul>
+      <p>Total exercises: {totalExercises}</p>
     </div>
   )
 }
 
-const Total = (props) =>{
-  return (
-    <div>
-      <p>Number of excercises {props.total}</p>
-    </div>
-  )
-}
 
 
 const App = () => {
@@ -40,10 +40,7 @@ const App = () => {
   return (
     <div>
       <Title course={course}/>
-      <Content name={parts[0].name} exercises={parts[0].exercises}/>
-      <Content name={parts[1].name} exercises={parts[1].exercises}/>
-      <Content name={parts[2].name} exercises={parts[2].exercises}/>
-      <Total total={parts[0].exercises+parts[1].exercises+parts[2].exercises}/>
+      <Content parts={parts}/>
     </div>
   )
 }
