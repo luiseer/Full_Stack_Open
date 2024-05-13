@@ -1,28 +1,43 @@
+import { useState } from "react"
+
+const Display = ({counter}) => <div>{counter}</div>
+const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
+
+  
+
 const App = () => {
-  const course = {
-    name: 'Half Stack application development',
-    parts: [
-      {
-        name: 'Fundamentals of React',
-        exercises: 10
-      },
-      {
-        name: 'Using props to pass data',
-        exercises: 7
-      },
-      {
-        name: 'State of a component',
-        exercises: 14
-      }
-    ]
+  const [counter, setCounter] = useState(0) 
+  console.log('Rendereing with counter value', counter);
+  console.log();
+
+  const incrementByOne = () => {
+    setCounter(counter +1)
+    console.log('increasing value in 1 before', counter);
   }
-  console.log(course.parts[0].name);
+  const decrementByOne = () => {
+    setCounter(counter -1)
+    console.log('decreasing value in 1 before', counter);
+  }
+  const setZero = () => {
+    setCounter(0)
+    console.log('reseting to zero', counter);
+  }
+
   return(
     <div>
-      <h1>{course.name}</h1>
-      <p>{course.parts[0].name}, {course.parts[0].exercises}</p>
-      <p>{course.parts[1].name}, {course.parts[1].exercises}</p>
-      <p>{course.parts[2].name}, {course.parts[2].exercises}</p>
+      <Display counter={counter}/>
+
+      <Button 
+        onClick={incrementByOne}
+        text='Plus'/>
+
+      <Button 
+        onClick={setZero}
+        text='Set on Zero'/>
+
+      <Button 
+        onClick={decrementByOne}
+        text='minus'/>
     </div>
   )
 }
