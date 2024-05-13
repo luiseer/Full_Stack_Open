@@ -1,43 +1,34 @@
 import { useState } from "react"
-
-const Display = ({counter}) => <div>{counter}</div>
-const Button = ({onClick, text}) => <button onClick={onClick}>{text}</button>
-
   
 
 const App = () => {
-  const [counter, setCounter] = useState(0) 
-  console.log('Rendereing with counter value', counter);
-  console.log();
 
-  const incrementByOne = () => {
-    setCounter(counter +1)
-    console.log('increasing value in 1 before', counter);
-  }
-  const decrementByOne = () => {
-    setCounter(counter -1)
-    console.log('decreasing value in 1 before', counter);
-  }
-  const setZero = () => {
-    setCounter(0)
-    console.log('reseting to zero', counter);
-  }
+  const [clicks, setClicks] = useState(
+    {left: 0,
+      rigth: 0
+    }
+  )
 
+  const handleLeftClick = () => {
+    const newClicks = {
+      ...clicks,
+      left: clicks.left + 1
+    }
+    setClicks(newClicks)
+  }
+  const handleRigthClick = () => {
+    const newClicks = {
+      ...clicks,
+      rigth: clicks.rigth +1
+    }
+    setClicks(newClicks)
+  }
   return(
     <div>
-      <Display counter={counter}/>
-
-      <Button 
-        onClick={incrementByOne}
-        text='Plus'/>
-
-      <Button 
-        onClick={setZero}
-        text='Set on Zero'/>
-
-      <Button 
-        onClick={decrementByOne}
-        text='minus'/>
+      {clicks.left}
+      <button onClick={handleLeftClick}>left</button>
+      <button onClick={handleRigthClick}>rigth</button>
+      {clicks.rigth}
     </div>
   )
 }
