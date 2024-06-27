@@ -21,7 +21,6 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
   
-
 const App = () => {
 
   const [clicks, setClicks] = useState(
