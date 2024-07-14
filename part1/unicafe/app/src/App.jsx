@@ -11,6 +11,10 @@ const Statistics = ({average, positive}) => {
   )
 }
 
+const WarningNotUse = () => {
+    return <h1>No feedback  given</h1>
+}
+
 const App = () => {
   // guarda los clics de cada botón en su propio estado
   const [feedBack, setFeedBack] = useState({
@@ -22,7 +26,7 @@ const App = () => {
     positive: 0,
   });
 
-  console.log(feedBack);
+  console.log(feedBack.average);
 
   const handleGood = () => {
     const newTotal = feedBack.total + 1;
@@ -80,7 +84,12 @@ const App = () => {
       <p>Neutral: {feedBack.neutral}</p>
       <p>Bad: {feedBack.bad}</p>
       <p>All {feedBack.total}</p>
-      <Statistics average={feedBack.average} positive={feedBack.positive}/>
+      {
+        feedBack.average === 0 && feedBack.positive === 0
+        ? <WarningNotUse/> : 
+        <Statistics average={feedBack.average} positive={feedBack.positive}/>
+      }
+
     </div>
   );
 };
