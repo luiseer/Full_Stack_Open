@@ -1,22 +1,31 @@
 import { useState } from 'react';
 
+const StatisticLine = ({ text, value }) => (
+  <p>{text}: {value}</p>
+);
 
-
-const Statistics = ({average, positive}) => {
+const Statistics = ({ good, neutral, bad, total, average, positive }) => {
   return (
     <>
-      <p>Average {average}</p>
-      <p>Positive {positive}%</p>
+      <StatisticLine text="Good" value={good} />
+      <StatisticLine text="Neutral" value={neutral} />
+      <StatisticLine text="Bad" value={bad} />
+      <StatisticLine text="All" value={total} />
+      <StatisticLine text="Average" value={average} />
+      <StatisticLine text="Positive" value={`${positive}%`} /> 
     </>
-  )
+  );
 }
 
 const WarningNotUse = () => {
-    return <h1>No feedback  given</h1>
+  return <h1>No feedback given</h1>;
 }
 
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+);
+
 const App = () => {
-  // guarda los clics de cada botón en su propio estado
   const [feedBack, setFeedBack] = useState({
     good: 0,
     neutral: 0,
@@ -25,8 +34,6 @@ const App = () => {
     average: 0,
     positive: 0,
   });
-
-  console.log(feedBack.average);
 
   const handleGood = () => {
     const newTotal = feedBack.total + 1;
@@ -76,20 +83,22 @@ const App = () => {
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={handleGood}>good</button>
-      <button onClick={handleNeutral}>neutral</button>
-      <button onClick={handleBad}>bad</button>
-      <h2>statics</h2>
-      <p>Good: {feedBack.good}</p>
-      <p>Neutral: {feedBack.neutral}</p>
-      <p>Bad: {feedBack.bad}</p>
-      <p>All {feedBack.total}</p>
-      {
-        feedBack.average === 0 && feedBack.positive === 0
-        ? <WarningNotUse/> : 
-        <Statistics average={feedBack.average} positive={feedBack.positive}/>
-      }
-
+      <Button handleClick={handleGood} text="good" />
+      <Button handleClick={handleNeutral} text="neutral" />
+      <Button handleClick={handleBad} text="bad" />
+      <h2>statistics</h2>
+      {feedBack.total === 0 ? (
+        <WarningNotUse />
+      ) : (
+        <Statistics
+          good={feedBack.good}
+          neutral={feedBack.neutral}
+          bad={feedBack.bad}
+          total={feedBack.total}
+          average={feedBack.average}
+          positive={feedBack.positive}
+        />
+      )}
     </div>
   );
 };
