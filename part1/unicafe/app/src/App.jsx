@@ -1,5 +1,16 @@
 import { useState } from 'react';
 
+
+
+const Statistics = ({average, positive}) => {
+  return (
+    <>
+      <p>Average {average}</p>
+      <p>Positive {positive}%</p>
+    </>
+  )
+}
+
 const App = () => {
   // guarda los clics de cada botón en su propio estado
   const [feedBack, setFeedBack] = useState({
@@ -69,8 +80,7 @@ const App = () => {
       <p>Neutral: {feedBack.neutral}</p>
       <p>Bad: {feedBack.bad}</p>
       <p>All {feedBack.total}</p>
-      <p>Average {feedBack.average}</p>
-      <p>Positive {feedBack.positive}%</p>
+      <Statistics average={feedBack.average} positive={feedBack.positive}/>
     </div>
   );
 };
