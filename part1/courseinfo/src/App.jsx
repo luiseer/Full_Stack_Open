@@ -1,68 +1,43 @@
-import { useState } from "react"
+const Header = (props) => {
+ return <h1>{props.course}</h1>
+}
 
-const History = (props) => {
-  if (props.leftOrRigthClicks.length === 0) {
-    return (
-      <div>
-        the app is used by pressing the buttons
-      </div>
-    )
-  }
-  return (
-    <div>
-      button press history: {props.leftOrRigthClicks.join(' ')}
-    </div>
+const Content = ({part, exercises}) => {
+ return  (
+  <>
+    <Part part={part} exercises={exercises}/>
+  </>
+)
+}
+
+const Total = (props) => {
+  return <p>Number of exercises {props.total}</p>
+}
+
+const Part = () => {
+  return(
+    <>
+      <p>Fundamentals of React, exercises: 10</p>
+      <p>Using props to pass data, exercises: 7</p>
+      <p>State of a component, exercises: 14</p>
+    </>
   )
 }
 
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>
-    {text}
-  </button>
-)
-  
-const App = () => {
+const App = ({part}) => {
+  const course = 'Half Stack application development'
+  const part1 = 'Fundamentals of React'
+  const exercises1 = 10
+  const part2 = 'Using props to pass data'
+  const exercises2 = 7
+  const part3 = 'State of a component'
+  const exercises3 = 14
 
-  const [clicks, setClicks] = useState(
-    {
-      left: 0,
-      rigth: 0,
-      totalClicks: 0,
-      leftOrRigthClicks: [] 
-    }
-  )
-
-  console.log(clicks);
-
-  const handleLeftClick = () => {
-    setClicks({
-      ...clicks,
-      totalClicks: clicks.totalClicks + 1,
-      leftOrRigthClicks: clicks.leftOrRigthClicks.concat('L'),
-      left: clicks.left + 1})
-  }
-  const handleRigthClick = () => {
-    setClicks({
-      ...clicks,
-      totalClicks: clicks.totalClicks + 1,
-      leftOrRigthClicks: clicks.leftOrRigthClicks.concat('R'),
-      rigth: clicks.rigth + 1})
-  }
-  const handleClicks = () =>{
-    setClicks({
-      ...clicks,
-      totalClicks: clicks.totalClicks +1
-    })
-  }
-  return(
+  return (
     <div>
-      {clicks.left}
-      <Button handleClick={handleLeftClick} text='left' />
-      <Button handleClick={handleRigthClick} text='right' />
-      {clicks.rigth}
-      {<div onClick={handleClicks}>total: {clicks.totalClicks}</div>}
-      <History leftOrRigthClicks={clicks.leftOrRigthClicks}/>
-      {/* <p>{clicks.leftOrRigthClicks.join(' ')}</p> */}
+      <Header course={course}/>
+      <Content/>
+      <Total total={exercises1 + exercises2 + exercises3}/>
     </div>
   )
 }
