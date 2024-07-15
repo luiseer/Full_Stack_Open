@@ -7,12 +7,28 @@ const StatisticLine = ({ text, value }) => (
 const Statistics = ({ good, neutral, bad, total, average, positive }) => {
   return (
     <>
-      <StatisticLine text="Good" value={good} />
-      <StatisticLine text="Neutral" value={neutral} />
-      <StatisticLine text="Bad" value={bad} />
-      <StatisticLine text="All" value={total} />
-      <StatisticLine text="Average" value={average} />
-      <StatisticLine text="Positive" value={`${positive}%`} /> 
+      <table>
+        <tr>
+          <td>
+            <StatisticLine text="Good" value={good} />
+          </td>
+          <td>
+            <StatisticLine text="Neutral" value={neutral} />
+          </td>
+          <td>
+            <StatisticLine text="Bad" value={bad} />
+          </td>
+          <td>
+            <StatisticLine text="All" value={total} />
+          </td>
+          <td>
+            <StatisticLine text="Average" value={average} />
+          </td>
+          <td>
+          <StatisticLine text="Positive" value={`${positive}%`} /> 
+          </td>
+        </tr>
+      </table>
     </>
   );
 }
@@ -99,6 +115,7 @@ const App = () => {
           positive={feedBack.positive}
         />
       )}
+      
     </div>
   );
 };
