@@ -1,5 +1,4 @@
-import Course from "./component/Course"
-
+import Course from "./component/CourseExercise";
 
 const App = () => {
   const courses = [
@@ -57,3 +56,4 @@ const App = () => {
 };
 
 export default App;
+
