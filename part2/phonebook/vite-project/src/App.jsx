@@ -1,19 +1,36 @@
 import { useState } from 'react'
+import SearchBox from './components/SearchBox'
 
 const App = () => {
   const [persons, setPersons] = useState([
     {
-      id: 0,
+      id: 1,
       name: 'Arto Hellas',
       tel: '5544332211'
+    },
+    { 
+      id: 2, 
+      name: 'Ada Lovelace', 
+      number: '39-44-5323523', 
+    },
+    { 
+      id: 3, 
+      name: 'Dan Abramov', 
+      number: '12-43-234345', 
+    },
+    { 
+      name: 'Mary Poppendieck', 
+      number: '39-23-6423122', 
+      id: 4 
     }
-  ]);
+  ])
   const [newName, setNewName] = useState('')
   const [newTelephone, setNewTelephone] = useState('')
 
   const handleAddName = (event) => {
     setNewName(event.target.value)
   }
+
   const handleAddTelephone = (event) => {
     setNewTelephone(event.target.value)
   }
@@ -31,14 +48,20 @@ const App = () => {
         name: newName,
         tel: newTelephone
       }
+      
       setPersons(persons.concat(personObject))
       setNewName('') // Limpiar el campo de texto después de agregar
+      setNewTelephone('')
     }
   }
 
   return (
     <>
       <h2>Phonebook</h2>
+      {/* Pasar 'persons' como prop al SearchBox */}
+      <SearchBox persons={persons} />
+        
+      <h2>Add new</h2>
       <form onSubmit={addContact}>
         <div>
           name: <input
@@ -59,6 +82,7 @@ const App = () => {
           <button type='submit'>add</button>
         </div>
       </form>
+
       <h2>Numbers</h2>
       <ul>
         {persons.map(person =>
@@ -69,4 +93,5 @@ const App = () => {
   )
 }
 
-export default App;
+export default App
+
