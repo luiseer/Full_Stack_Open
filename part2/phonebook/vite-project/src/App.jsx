@@ -1,38 +1,40 @@
-import { useState } from 'react';
+import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
     {
       id: 0,
       name: 'Arto Hellas',
-      // tel: '5544332211'
+      tel: '5544332211'
     }
   ]);
-  const [newName, setNewName] = useState('');
-  // const [newTell, setNewTell] = useState('');
+  const [newName, setNewName] = useState('')
+  const [newTelephone, setNewTelephone] = useState('')
 
   const handleAddName = (event) => {
-    setNewName(event.target.value);
-  };
+    setNewName(event.target.value)
+  }
+  const handleAddTelephone = (event) => {
+    setNewTelephone(event.target.value)
+  }
 
   const addContact = (event) => {
-    event.preventDefault();
-
+    event.preventDefault()
     // Verificar si el nombre ya está en la lista
-    const nameExists = persons.some(person => person.name === newName);
-
+    const nameExists = persons.some(person => person.name === newName)
     if (nameExists) {
-      alert('El nombre ya está en la lista');
-      setNewName(''); // Limpiar el campo de texto después de agregar
+      alert(`${newName} already exists`)
+      setNewName('') // Limpiar el campo de texto después de agregar
     } else {
       const personObject = {
         id: persons.length + 1,
-        name: newName
-      };
-      setPersons(persons.concat(personObject));
-      setNewName(''); // Limpiar el campo de texto después de agregar
+        name: newName,
+        tel: newTelephone
+      }
+      setPersons(persons.concat(personObject))
+      setNewName('') // Limpiar el campo de texto después de agregar
     }
-  };
+  }
 
   return (
     <>
@@ -45,7 +47,13 @@ const App = () => {
             value={newName}
             onChange={handleAddName}
           />
-          {/* tel: <input type="text" /> */}
+        </div>
+        <div>
+          phone: <input 
+            type="text" 
+            placeholder='phone'
+            value={newTelephone}
+            onChange={handleAddTelephone}/>
         </div>
         <div>
           <button type='submit'>add</button>
@@ -54,11 +62,11 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {persons.map(person =>
-          <li key={person.id}>{person.name}</li>
+          <li key={person.id}>{person.name} {person.tel}</li>
         )}
       </ul>
     </>
-  );
-};
+  )
+}
 
 export default App;
