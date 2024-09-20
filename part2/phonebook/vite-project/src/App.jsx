@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personServices from './services/personServices'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,11 +12,12 @@ const App = () => {
   const [findName, setFindName] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {setPersons(response.data)})
-          
-    }, [])
+    personServices
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+    }, [persons])
     
   // Manejar el cambio de nombre en el formulario
   const handleAddName = (event) => setNewName(event.target.value)
@@ -26,8 +28,8 @@ const App = () => {
   // Agregar un nuevo contacto
   const addContact = (event) => {
     event.preventDefault()
-    const nameExists = persons.some(person => person.name === newName)
 
+    const nameExists = persons.some(person => person.name === newName)
     if (nameExists) {
       alert(`${newName} already exists`)
       setNewName('') // Limpiar el campo de texto después de agregar
@@ -35,9 +37,17 @@ const App = () => {
       const personObject = {
         id: persons.length + 1,
         name: newName,
-        tel: newTelephone
+        number: newTelephone
       }
-      setPersons(persons.concat(personObject))
+
+      personServices
+        .createPerson(personObject)
+        .then(returPerson => {
+          setPersons(persons.concat(returPerson))
+        })
+      
+      // setPersons(persons.concat(personObject))
+
       setNewName('') // Limpiar el campo de texto después de agregar
       setNewTelephone('')
     }

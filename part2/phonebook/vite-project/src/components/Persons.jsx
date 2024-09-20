@@ -1,5 +1,5 @@
 const Persons = ({ persons }) => {
-    return (
+  return (
       <ul>
         {persons.map(person => (
           <li key={person.id}>
@@ -9,6 +9,4 @@ const Persons = ({ persons }) => {
       </ul>
     );
   };
-  
-  export default Persons;
-  
+  export default Persons;  
