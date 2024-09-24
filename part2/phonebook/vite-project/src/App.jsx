@@ -32,10 +32,10 @@ const App = () => {
     const nameExists = persons.some(person => person.name === newName)
     if (nameExists) {
       alert(`${newName} already exists`)
-      setNewName('') // Limpiar el campo de texto después de agregar
+      setNewName('')
     } else {
       const personObject = {
-        id: persons.length + 1,
+        id: length + 1 ** Math.random(),
         name: newName,
         number: newTelephone
       }
@@ -45,13 +45,30 @@ const App = () => {
         .then(returPerson => {
           setPersons(persons.concat(returPerson))
         })
-      
-      // setPersons(persons.concat(personObject))
-
-      setNewName('') // Limpiar el campo de texto después de agregar
+    
+      setNewName('')
       setNewTelephone('')
     }
   }
+
+  const handleDeletePerson = (id) => {
+    const personToDelete = persons.find(person => person.id === id)
+    console.log(personToDelete)
+    
+    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
+      personServices
+        .deletePerson(id)
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id)) // Elimina de la lista
+        })
+        .catch(error => {
+          alert(`The person '${personToDelete.name}' was already removed from the server`)
+          setPersons(persons.filter(person => person.id !== id)) // Elimina localmente
+        });
+    }
+  };
+  
+
 
   // Filtrar los nombres según lo que se busca
   const handleFind = (event) => setFindName(event.target.value)
@@ -74,7 +91,7 @@ const App = () => {
       />
 
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} handleDeletePerson={handleDeletePerson} />
     </div>
   )
 }

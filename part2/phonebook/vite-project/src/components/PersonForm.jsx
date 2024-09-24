@@ -12,7 +12,7 @@ const PersonForm = ({ addContact, newName, handleAddName, newTelephone, handleAd
         </div>
         <div>
           phone: 
-          <input 
+          <input
             type="text" 
             placeholder="phone"
             value={newTelephone}
