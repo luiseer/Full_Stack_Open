@@ -27,46 +27,63 @@ const App = () => {
 
   // Agregar un nuevo contacto
   const addContact = (event) => {
-    event.preventDefault()
-
-    const nameExists = persons.some(person => person.name === newName)
-    if (nameExists) {
-      alert(`${newName} already exists`)
-      setNewName('')
+    event.preventDefault();
+  
+    const personExists = persons.find(person => person.name === newName);
+  
+    if (personExists) {
+      // Confirmación antes de actualizar el número
+      if (window.confirm(`${newName} is already in the phonebook, replace the old number with the new one?`)) {
+        const updatedPerson = { ...personExists, number: newTelephone };
+  
+        personServices
+          .updatePerson(personExists.id, updatedPerson) // Actualiza con PUT
+          .then(returnedPerson => {
+            setPersons(persons.map(person => 
+              person.id !== personExists.id ? person : returnedPerson
+            ));
+            setNewName('');
+            setNewTelephone('');
+          })
+          .catch(error => {
+            alert(`The contact '${newName}' was already removed from the server`);
+            setPersons(persons.filter(person => person.id !== personExists.id));
+          });
+      }
     } else {
-      const personObject = {
-        id: length + 1 ** Math.random(),
+      // Si el nombre no existe, crea un nuevo contacto
+      const newPerson = {
         name: newName,
         number: newTelephone
-      }
-
+      };
+  
       personServices
-        .createPerson(personObject)
-        .then(returPerson => {
-          setPersons(persons.concat(returPerson))
-        })
-    
-      setNewName('')
-      setNewTelephone('')
-    }
-  }
-
-  const handleDeletePerson = (id) => {
-    const personToDelete = persons.find(person => person.id === id)
-    console.log(personToDelete)
-    
-    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
-      personServices
-        .deletePerson(id)
-        .then(() => {
-          setPersons(persons.filter(person => person.id !== id)) // Elimina de la lista
-        })
-        .catch(error => {
-          alert(`The person '${personToDelete.name}' was already removed from the server`)
-          setPersons(persons.filter(person => person.id !== id)) // Elimina localmente
+        .createPerson(newPerson) // Crea con POST
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson));
+          setNewName('');
+          setNewTelephone('');
         });
     }
   };
+  
+
+  const handleDeletePerson = (id) => {
+    const personToDelete = persons.find(person => person.id === id);
+  
+    if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
+      personServices
+        .deletePerson(String(id))  // Convertir el ID a string
+        .then(() => {
+          setPersons(persons.filter(person => person.id !== id));
+        })
+        .catch(error => {
+          alert(`The person '${personToDelete.name}' was already removed from the server`, error.error);
+          setPersons(persons.filter(person => person.id !== id)); 
+        });
+    }
+};
+
   
 
 
