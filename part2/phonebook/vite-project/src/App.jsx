@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personServices from './services/personServices'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newTelephone, setNewTelephone] = useState('')
   const [findName, setFindName] = useState('')
+  const [addPerson, setAddPerson] = useState(true)
 
   useEffect(() => {
     personServices
@@ -27,65 +28,69 @@ const App = () => {
 
   // Agregar un nuevo contacto
   const addContact = (event) => {
-    event.preventDefault();
+    event.preventDefault()
   
-    const personExists = persons.find(person => person.name === newName);
+    const personExists = persons.find(person => person.name === newName)
   
     if (personExists) {
       // Confirmación antes de actualizar el número
       if (window.confirm(`${newName} is already in the phonebook, replace the old number with the new one?`)) {
-        const updatedPerson = { ...personExists, number: newTelephone };
+        const updatedPerson = { ...personExists, number: newTelephone }
   
         personServices
           .updatePerson(personExists.id, updatedPerson) // Actualiza con PUT
           .then(returnedPerson => {
             setPersons(persons.map(person => 
               person.id !== personExists.id ? person : returnedPerson
-            ));
-            setNewName('');
-            setNewTelephone('');
+            ))
+            setNewName('')
+            setNewTelephone('')
           })
           .catch(error => {
-            alert(`The contact '${newName}' was already removed from the server`);
-            setPersons(persons.filter(person => person.id !== personExists.id));
-          });
+          console.log(error)
+            alert(`The contact '${newName}' was already removed from the server`)
+            setPersons(persons.filter(person => person.id !== personExists.id))
+          })
       }
     } else {
       // Si el nombre no existe, crea un nuevo contacto
       const newPerson = {
         name: newName,
         number: newTelephone
-      };
+      }
   
       personServices
         .createPerson(newPerson) // Crea con POST
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson));
-          setNewName('');
-          setNewTelephone('');
-        });
+          setPersons(persons.concat(returnedPerson))
+          setAddPerson(false)
+          setNewName('')
+          setNewTelephone('')
+
+          setTimeout(() => {
+            setAddPerson(true)
+          }, 3000)
+
+        })
     }
-  };
+  }
   
 
   const handleDeletePerson = (id) => {
-    const personToDelete = persons.find(person => person.id === id);
+    const personToDelete = persons.find(person => person.id === id)
   
     if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
       personServices
         .deletePerson(String(id))  // Convertir el ID a string
         .then(() => {
-          setPersons(persons.filter(person => person.id !== id));
+          setPersons(persons.filter(person => person.id !== id))
         })
         .catch(error => {
-          alert(`The person '${personToDelete.name}' was already removed from the server`, error.error);
-          setPersons(persons.filter(person => person.id !== id)); 
-        });
+          alert(`The person '${personToDelete.name}' was already removed from the server`, error.error)
+          setPersons(persons.filter(person => person.id !== id)) 
+        })
     }
-};
-
-  
-
+}
 
   // Filtrar los nombres según lo que se busca
   const handleFind = (event) => setFindName(event.target.value)
@@ -95,8 +100,13 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <Filter findName={findName} handleFind={handleFind} />
+
+      {
+        addPerson ? '' : <p className='add-person'>Person add ok</p>
+      }
+      <Notification message={addPerson}/>
 
       <h3>Add a new</h3>
       <PersonForm 
