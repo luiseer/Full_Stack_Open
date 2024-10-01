@@ -10,7 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newTelephone, setNewTelephone] = useState('')
   const [findName, setFindName] = useState('')
-  const [addPerson, setAddPerson] = useState(true)
+  const [messageState, setMessageState] = useState(null)
 
   useEffect(() => {
     personServices
@@ -63,12 +63,13 @@ const App = () => {
         .createPerson(newPerson) // Crea con POST
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
-          setAddPerson(false)
+          
+          setMessageState('Person add ok')
           setNewName('')
           setNewTelephone('')
 
           setTimeout(() => {
-            setAddPerson(true)
+            setMessageState(null)
           }, 3000)
 
         })
@@ -86,7 +87,8 @@ const App = () => {
           setPersons(persons.filter(person => person.id !== id))
         })
         .catch(error => {
-          alert(`The person '${personToDelete.name}' was already removed from the server`, error.error)
+          setMessageState(`The person '${personToDelete.name}' was already removed from the server`)
+          console.log(error.error)
           setPersons(persons.filter(person => person.id !== id)) 
         })
     }
@@ -103,10 +105,7 @@ const App = () => {
       <h1>Phonebook</h1>
       <Filter findName={findName} handleFind={handleFind} />
 
-      {
-        addPerson ? '' : <p className='add-person'>Person add ok</p>
-      }
-      <Notification message={addPerson}/>
+      <Notification message={messageState}/>
 
       <h3>Add a new</h3>
       <PersonForm 
