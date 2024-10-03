@@ -58,7 +58,7 @@ const App = () => {
         name: newName,
         number: newTelephone
       }
-  
+      
       personServices
         .createPerson(newPerson) // Crea con POST
         .then(returnedPerson => {
