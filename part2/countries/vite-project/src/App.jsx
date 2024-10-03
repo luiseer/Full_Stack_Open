@@ -13,13 +13,37 @@ function App() {
 
   const handleFind = (event) => setFindCountrie(event.target.value)
 
-  // Ahora filtramos por el nombre del país (estado) en lugar de la capital
-  const filterCountries = countries.filter(countrie => 
-    countrie.name.common.toLowerCase().includes(findCountrie.toLowerCase())
+  // Filtramos los países según la búsqueda
+  const filteredCountries = countries.filter(country => 
+    country.name.common.toLowerCase().includes(findCountrie.toLowerCase())
   )
 
-  console.log(filterCountries.length)
-  
+  // Renderizar los países según el número de coincidencias
+  const renderCountries = () => {
+    if (filteredCountries.length > 10) {
+      return <p>Too many matches, specify another filter</p>
+    } else if (filteredCountries.length > 1 && filteredCountries.length <= 10) {
+      return (
+        <ul>
+          {filteredCountries.map(country => (
+            <li key={country.name.common}>{country.name.common}</li>
+          ))}
+        </ul>
+      )
+    } else if (filteredCountries.length === 1) {
+      const country = filteredCountries[0]
+      return (
+        <div>
+          <h2>{country.name.common}</h2>
+          <p>Capital: {country.capital}</p>
+          <p>Population: {country.population}</p>
+          <img src={country.flags.svg} alt={`Flag of ${country.name.common}`} width="100" />
+        </div>
+      )
+    } else {
+      return <p>No matches found</p>
+    }
+  }
 
   return (
     <>
@@ -27,13 +51,10 @@ function App() {
       <SearchBox  
         handleFind={handleFind} 
         findCountrie={findCountrie}
-        filterCountries={filterCountries}
       />
+      {renderCountries()}
     </>
   )
 }
 
 export default App
-
-
-
