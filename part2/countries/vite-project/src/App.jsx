@@ -1,48 +1,33 @@
-import { useState, useEffect } from 'react';
-import SearchBox from './components/SearchBox';
-import { getAll } from './services/getAll';
+import { useState, useEffect } from 'react'
+import SearchBox from './components/SearchBox'
+import axios from 'axios'
 
 function App() {
-  const [query, setQuery] = useState('');
-  const [countriesData, setCountriesData] = useState([]);
+  const [countries, setCountries] = useState('')
 
-  const inputSearch = (e) => setQuery(e.target.value);
+  const handleInput = (e) =>{
+    setCountries(e.target.value)
+  }
 
-  useEffect(() => {
-    if (query) {
-      getAll({ name: query })
-        .then((data) => {
-          setCountriesData([data]); // La API devuelve un objeto, lo convertimos en un array
-        })
-        .catch((error) => {
-          console.error('Error fetching countries:', error);
-          setCountriesData([]); // Limpiamos los datos en caso de error
-        });
-    } else {
-      setCountriesData([]); // Limpiamos los datos si no hay query
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${countries}`)
+      .then(response => console.log(response.data))
     }
-  }, [query]);
+    
+  
+
 
   return (
     <>
       <h1>Countries</h1>
-      <SearchBox inputSearch={inputSearch} />
-      {countriesData.length > 10 && <p>Too many matches, specify another filter</p>}
-      {countriesData.length <= 10 &&
-        countriesData.length > 1 &&
-        countriesData.map((country) => <p key={country.name}>{country.name}</p>)}
-      {countriesData.length === 1 && (
-        <div>
-          <h2>{countriesData[0].name.common}</h2>
-          <p>Capital: {countriesData[0].capital}</p>
-          <p>Population: {countriesData[0].population}</p>
-          <img src={countriesData[0].flags.png} alt={`Flag of ${countriesData[0].name.common}`} width="100" />
-        </div>
-      )}
+      <SearchBox handleInput={handleInput} handleSubmit={handleSubmit}/>
+
     </>
-  );
+  )
 }
 
-export default App;
+export default App
 
 
