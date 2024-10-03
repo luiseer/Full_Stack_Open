@@ -13,7 +13,7 @@ function App() {
 
   const handleFind = (event) => setFindCountrie(event.target.value)
 
-  // Filtramos los países según la búsqueda
+  // Filtrar los países según la búsqueda
   const filteredCountries = countries.filter(country => 
     country.name.common.toLowerCase().includes(findCountrie.toLowerCase())
   )
@@ -31,12 +31,17 @@ function App() {
         </ul>
       )
     } else if (filteredCountries.length === 1) {
-      const country = filteredCountries[0]
+      const country = filteredCountries[0] //pedir exlpicación 
+      
+      // Extraer los lenguajes como una lista de strings
+      const languages = Object.values(country.languages).join(', ')
+
       return (
         <div>
           <h2>{country.name.common}</h2>
           <p>Capital: {country.capital}</p>
           <p>Population: {country.population}</p>
+          <p>Languages: {languages}</p>
           <img src={country.flags.svg} alt={`Flag of ${country.name.common}`} width="100" />
         </div>
       )
