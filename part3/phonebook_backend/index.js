@@ -28,9 +28,20 @@ persons =
     }
 ]
 
+console.log(persons.length)
+
 
 app.get('/api/persons', (req, res) =>{
     res.json(persons)
+})
+
+app.get('/api/info', (req, res) =>{
+    // res.send('<p>Phonebook has info for people<p/>')
+    const requestTime = new Date()
+    res.send(`
+        <p>Phone book has info for ${persons.length} people<p/>
+        <p>${requestTime}<p/>
+        `)
 })
 
 const PORT  = 3001
