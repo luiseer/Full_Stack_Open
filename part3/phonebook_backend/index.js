@@ -3,7 +3,6 @@ const app = express()
 
 app.use(express.json())
 
-
 persons = 
 [
     { 
@@ -27,7 +26,6 @@ persons =
       "number": "39-23-6423122"
     }
 ]
-
 
 app.get('/api/persons', (req, res) =>{
     res.json(persons)
@@ -84,7 +82,7 @@ app.post('/api/persons', (req, res) => {
   }
   persons = persons.concat(newPerson)
 
-  res.json(newPerson)
+  res.json(newPerson).status(201)
 })
 
 
