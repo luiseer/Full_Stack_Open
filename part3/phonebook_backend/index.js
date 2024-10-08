@@ -28,8 +28,6 @@ persons =
     }
 ]
 
-console.log(persons.length)
-
 
 app.get('/api/persons', (req, res) =>{
     res.json(persons)
@@ -42,6 +40,18 @@ app.get('/api/info', (req, res) =>{
         <p>Phone book has info for ${persons.length} people<p/>
         <p>${requestTime}<p/>
         `)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+    const id = Number(req.params.id)
+    const person = persons.find( p => p.id === id)
+    res.json(person)
+})
+
+app.delete('/api/persons/:id', (req, res) =>{
+    const id = Number(req.params.id)
+    const person = persons.filter(p => p.id !== id)
+    res.json(person).status(204).end()
 })
 
 const PORT  = 3001
