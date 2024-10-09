@@ -1,7 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
+
 
 persons = 
 [
@@ -32,7 +34,6 @@ app.get('/api/persons', (req, res) =>{
 })
 
 app.get('/api/info', (req, res) =>{
-    // res.send('<p>Phonebook has info for people<p/>')
     const requestTime = new Date()
     res.send(`
         <p>Phone book has info for ${persons.length} people<p/>
@@ -44,10 +45,10 @@ app.get('/api/persons/:id', (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find( p => p.id === id)
 
-    if (person) {
-        res.json(person)
+    if (!person) {
+      res.status(404).end()
       } else {
-        res.status(404).end  
+        res.json(person)
     }
 })
 
@@ -84,6 +85,7 @@ app.post('/api/persons', (req, res) => {
 
   res.json(newPerson).status(201)
 })
+
 
 
 
