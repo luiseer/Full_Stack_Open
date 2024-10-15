@@ -20,9 +20,7 @@ function App() {
   )
 
   // Función para manejar el clic en el botón "show"
-  const handleClick = (country) => {
-    setSelectedCountry(country)
-  }
+  const handleClick = country => setSelectedCountry(country)
 
   // Renderizar los países según el número de coincidencias
   const renderCountries = () => {

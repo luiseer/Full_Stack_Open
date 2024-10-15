@@ -5,6 +5,13 @@ const app = express()
 app.use(express.json())
 
 
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body);
+});
+
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+
+
 persons = 
 [
     { 
@@ -54,8 +61,8 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.delete('/api/persons/:id', (req, res) =>{
     const id = Number(req.params.id)
-    const person = persons.filter(p => p.id !== id)
-    res.json(person).status(204).end()
+    persons = persons.filter(p => p.id !== id)
+    res.status(204).end()
 })
 
 const generateId = (nmin, nmax) => Math.floor(Math.random() * (nmax - nmin) + nmin)
@@ -83,7 +90,7 @@ app.post('/api/persons', (req, res) => {
   }
   persons = persons.concat(newPerson)
 
-  res.json(newPerson).status(201)
+  res.status(201).json(newPerson)
 })
 
 
