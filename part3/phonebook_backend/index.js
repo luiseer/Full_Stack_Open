@@ -1,15 +1,16 @@
 const express = require('express')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const cors = require('cors')
+require('dotenv').config()
 const app = express()
 
 app.use(express.json())
+app.use(express.static('dist'))
 app.use(cors())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
-
-morgan.token('body', (req) => {
-  return JSON.stringify(req.body);
-});
+// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+// morgan.token('body', (req) => {
+//   return JSON.stringify(req.body)
+// })
 
 persons = 
 [
@@ -71,14 +72,14 @@ app.post('/api/persons', (req, res) => {
 
   if (!body.name || !body.number) {
     return res.status(400).json({
-      error: 'El nombre o el número faltan'
+      error: 'Number or name is missing'
     })
   }
   const personExists = persons.find(p => p.name === body.name)
 
   if (personExists) {
     return res.status(400).json({
-      error: 'La persona ya existe en la agenda'
+      error: 'the person is already exits'
     })
   }
 
@@ -94,8 +95,7 @@ app.post('/api/persons', (req, res) => {
 
 
 
-
-const PORT  = 3001
-app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`)   
+const PORT = process.env.PORT || 3001
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server runnign on port ${PORT}`)
 })
