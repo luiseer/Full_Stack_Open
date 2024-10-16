@@ -18,7 +18,7 @@ const App = () => {
       .then(initialPersons => {
         setPersons(initialPersons)
       })
-    }, [persons])
+    }, [])
     
   // Manejar el cambio de nombre en el formulario
   const handleAddName = (event) => setNewName(event.target.value)
