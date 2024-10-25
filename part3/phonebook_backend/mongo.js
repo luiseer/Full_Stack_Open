@@ -1,36 +1,39 @@
 const mongoose = require('mongoose')
 const password = process.argv[2]
 
-const url = `mongodb+srv://admin:${password}@cluster0.l43f4.mongodb.net/Cluster0?retryWrites=true&w=majority`
+const url = `mongodb+srv://admin:${password}@cluster0.l43f4.mongodb.net/PhoneNumber?retryWrites=true&w=majority`
 
-mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true})
-const contactSchema = new mongoose.Schema({
-    name: String,
-    number: String
+mongoose.connect(url)
+
+const phoneNumberSchema = new mongoose.Schema({
+  name: String,
+  number: String,
 })
-const Contact = mongoose.model('Contact', contactSchema)
+const PhoneNumber = mongoose.model('PhoneNumber', phoneNumberSchema)
+
 
 if (process.argv.length === 5) {
     const name = process.argv[3]
     const number = process.argv[4]
-    const contact = new Contact ({
-        name: name,
-        number: number
+  
+    const contact = new PhoneNumber({
+      name: name,
+      number: number,
     })
+  
     contact.save().then(() => {
-        console.log(`added ${name} number ${number} to phonebook`)
-        mongoose.connection.close()
+      console.log(`Added ${name} number ${number} to phonebook`)
+      mongoose.connection.close() 
     })
-} else if (process.argv.length === 3) {
-    Contact.find({}).then((r) => {
-        console.log('phonebook')
-        r.forEach((contact) => {
-            console.log(`${contact.name} ${contact.number}`)
-        })
-        mongoose.connect.close()
+  } else if (process.argv.length === 3) {
+    PhoneNumber.find({}).then((result) => {
+      console.log('Phonebook:')
+      result.forEach((contact) => {
+        console.log(`${contact.name} ${contact.number}`)
+      })
+      mongoose.connection.close()
     })
-} else {
+  } else {
     console.log('Usage: node mongo.js <password> [name number]')
     mongoose.connection.close()
-}
-
+  }
