@@ -1,9 +1,9 @@
 const express = require('express')
-// const morgan = require('morgan')
-const cors = require('cors')
-require('dotenv').config()
 const app = express()
-
+const cors = require('cors')
+const Person = require('./models/person.js')
+// const morgan = require('morgan')
+require('dotenv').config()
 app.use(express.json())
 app.use(express.static('dist'))
 app.use(cors())
@@ -37,7 +37,11 @@ persons =
 ]
 
 app.get('/api/persons', (req, res) =>{
-    res.json(persons)
+    Person.find({}).then(persons => {
+      res.json(persons)
+    }).catch(error => {
+      res.status(500).json({ error: error.message })
+    })
 })
 
 app.get('/api/info', (req, res) =>{
@@ -67,30 +71,64 @@ app.delete('/api/persons/:id', (req, res) =>{
 
 const generateId = (nmin, nmax) => Math.floor(Math.random() * (nmax - nmin) + nmin)
 
+// app.post('/api/persons', (req, res) => {
+//   const body = req.body
+
+//   if (body.content === undefined) {
+//     return res.status(400).json({error: 'content missing'})
+//   }
+
+//   const number = new Number({
+//     name: body.name,
+//     number: body.number
+//   })
+
+//   person.save().then(saveNumber => {
+//     res.json(saveNumber)
+//   })
+
+  // if (!body.name || !body.number) {
+  //   return res.status(400).json({
+  //     error: 'Number or name is missing'
+  //   })
+  // }
+  // const personExists = persons.find(p => p.name === body.name)
+
+  // if (personExists) {
+  //   return res.status(400).json({
+  //     error: 'the person is already exits'
+  //   })
+  // }
+
+  // const newPerson = {
+  //   name: body.name,
+  //   number: body.number,
+  //   id: generateId(5, 500)
+  // }
+  // persons = persons.concat(newPerson)
+
+  // res.status(201).json(newPerson)
+// })
+
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
   if (!body.name || !body.number) {
-    return res.status(400).json({
-      error: 'Number or name is missing'
-    })
-  }
-  const personExists = persons.find(p => p.name === body.name)
-
-  if (personExists) {
-    return res.status(400).json({
-      error: 'the person is already exits'
-    })
+    return res.status(400).json({ error: 'name or number missing' })
   }
 
-  const newPerson = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId(5, 500)
-  }
-  persons = persons.concat(newPerson)
+    number: body.number
+  })
 
-  res.status(201).json(newPerson)
+  person.save()
+    .then(savedPerson => {
+      res.json(savedPerson)
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message })
+    })
 })
 
 
