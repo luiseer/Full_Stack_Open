@@ -44,8 +44,8 @@ app.delete('/api/persons/:id', (req, res, next) =>{
     Person.findByIdAndDelete(req.params.id)
     .then(result => {
       res.status(204).end()
-      
     })
+    .catch(error => next(error))
 })
 
 // const generateId = (nmin, nmax) => Math.floor(Math.random() * (nmax - nmin) + nmin)
