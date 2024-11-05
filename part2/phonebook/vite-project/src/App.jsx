@@ -82,17 +82,18 @@ const App = () => {
   
     if (personToDelete && window.confirm(`Delete ${personToDelete.name}?`)) {
       personServices
-        .deletePerson(String(id))  // Convertir el ID a string
+        .deletePerson(id)
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
         })
         .catch(error => {
+          console.error('Error during deletion:', error)
           setMessageState(`The person '${personToDelete.name}' was already removed from the server`)
-          console.log(error.error)
-          setPersons(persons.filter(person => person.id !== id)) 
+          setPersons(persons.filter(person => person.id !== id))
         })
     }
-}
+  }
+  
 
   // Filtrar los nombres según lo que se busca
   const handleFind = (event) => setFindName(event.target.value)
