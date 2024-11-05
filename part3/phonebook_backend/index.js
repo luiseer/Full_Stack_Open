@@ -2,12 +2,13 @@ const express = require('express')
 const app = express()
 const cors = require('cors')
 const Person = require('./models/person.js')
+const errorHandler = require('./middlewares/errorHandler.js')
 // const morgan = require('morgan')
 require('dotenv').config()
 app.use(express.json())
 app.use(express.static('dist'))
 app.use(cors())
-// app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+// app.use(morgan(':method :url :status :res[content-length] - :res-time ms :body'))
 // morgan.token('body', (req) => {
 //   return JSON.stringify(req.body)
 // })
@@ -22,22 +23,19 @@ app.get('/api/persons', (req, res) =>{
 })
 
 app.get('/api/info', (req, res) =>{
-    const requestTime = new Date()
+    const reqTime = new Date()
     res.send(`
         <p>Phone book has info for ${persons.length} people<p/>
-        <p>${requestTime}<p/>
+        <p>${reqTime}<p/>
         `)
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find( p => p.id === id)
-
-    if (!person) {
-      res.status(404).end()
-      } else {
-        res.json(person)
-    }
+  Person.findById(req.params.id)
+    .then(p => {
+      res.json(p)
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) =>{
@@ -89,6 +87,21 @@ app.delete('/api/persons/:id', (req, res, next) =>{
   // res.status(201).json(newPerson)
 // })
 
+app.put('/api/persons/:id', (req, res, next) => {
+  const body = req.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then(updatePerson => {
+      res.json(updatePerson)
+    })
+    .catch(error => next(error))
+})
+
 app.post('/api/persons', (req, res) => {
   const body = req.body
 
@@ -110,7 +123,7 @@ app.post('/api/persons', (req, res) => {
     })
 })
 
-
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, '0.0.0.0', () => {
