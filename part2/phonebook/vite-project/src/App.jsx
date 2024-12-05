@@ -70,7 +70,7 @@ const App = () => {
         })
         .catch(error => {
           // Captura el error y lo establece en el estado de mensaje
-          const errorMessage = error || 'An unexpected error occurred';
+          const errorMessage = error || 'An unexpected error occurred'
           setMessageState({ message: errorMessage, type: 'error' })
           setTimeout(() => setMessageState(null), 3000)
         })
@@ -109,6 +109,8 @@ const App = () => {
   const filteredPersons = persons.filter(person =>
     person?.name?.toLowerCase().includes(findName.toLowerCase())
   )
+
+  console.log('Message type:', messageState?.type); // Asegúrate de que el tipo esté correctamente establecido
 
 
   return (

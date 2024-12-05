@@ -1,12 +1,10 @@
 const Notification = ({ message, type }) => {
-  if (message === null) {
+  if (!message) {
     return null
   }
 
   const notificationClass = type === 'error' ? 'error' : 'success'
 
-  console.log(message)
-  console.log(type)
 
   return (
     <div className={`message ${notificationClass}`}>
