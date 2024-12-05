@@ -11,10 +11,15 @@ const getAll = () =>{
     })
 }
 
-const createPerson = (newObject) =>{
+const createPerson = (newObject) => {
     const request = axios.post(baseUrl, newObject)
     return request.then(response => response.data)
-}
+      .catch(err => {
+        // Aquí manejamos el error y lo devolvemos para usarlo en el componente
+        throw err.response?.data?.error || 'An unexpected error occurred'
+      })
+  }
+  
 
 const updatePerson = (id, newObject) => {
     const request = axios.put(`${baseUrl}/${id}`, newObject)

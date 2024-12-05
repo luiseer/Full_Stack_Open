@@ -16,8 +16,22 @@ mongoose.connect(url)
 
 // Definición del esquema
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String
+  name: {
+    type: String,
+    minlength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    minlength: 8,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /\d{2,3}-\d{5,}/.test(v) // Ejemplo: "12-345678"
+      },
+      message: props => `${props.value} no es un número válido. Debe seguir el formato "12-345678".`
+    }
+  }
 })
 
 // Configuración del esquema para el formato JSON

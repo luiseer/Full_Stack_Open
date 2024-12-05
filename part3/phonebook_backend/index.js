@@ -102,7 +102,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
   const body = req.body
 
   if (!body.name || !body.number) {
@@ -118,9 +118,7 @@ app.post('/api/persons', (req, res) => {
     .then(savedPerson => {
       res.json(savedPerson)
     })
-    .catch(error => {
-      res.status(500).json({ error: error.message })
-    })
+    .catch(error => next(error))
 })
 
 app.use(errorHandler)
