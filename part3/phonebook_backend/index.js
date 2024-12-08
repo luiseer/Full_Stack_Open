@@ -14,23 +14,28 @@ app.use(cors())
 // })
 
 
-app.get('/api/persons', (req, res) =>{
-    Person.find({}).then(persons => {
+app.get('/api/persons', (req, res, next) => {
+  Person.find({})
+    .then(persons => {
       res.json(persons)
-    }).catch(error => {
-      res.status(500).json({ error: error.message })
     })
+    .catch(error => next(error)) // Pasa el error al middleware de manejo de errores
 })
 
-app.get('/api/info', (req, res) =>{
-    const reqTime = new Date()
-    res.send(`
-        <p>Phone book has info for ${persons.length} people<p/>
-        <p>${reqTime}<p/>
-        `)
+app.get('/api/info', (req, res, next) => {
+  const reqTime = new Date()
+
+  Person.countDocuments({})
+      .then(count => {
+          res.send(`
+              <p>Phone book has info for ${count} people</p>
+              <p>${reqTime}</p>
+          `)
+      })
+      .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
   Person.findById(req.params.id)
     .then(p => {
       res.json(p)
