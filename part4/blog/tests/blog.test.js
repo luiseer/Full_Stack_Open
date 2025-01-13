@@ -77,7 +77,7 @@ describe('favorite blog', () => {
       likes: 5,
       __v: 0,
     },
-  ];
+  ]
 
   const listWithMultipleBlogs = [
     {
@@ -104,28 +104,56 @@ describe('favorite blog', () => {
       likes: 7,
       __v: 0,
     },
-  ];
+  ]
+
+  const listWithTieBlogs = [
+    {
+      _id: '5a422aa71b54a676234d17f8',
+      title: 'Go To Statement Considered Harmful',
+      author: 'Edsger W. Dijkstra',
+      url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+      likes: 10,
+      __v: 0,
+    },
+    {
+      _id: '5a422b3a1b54a676234d17f9',
+      title: 'Canonical string reduction',
+      author: 'Edsger W. Dijkstra',
+      url: 'http://example.com',
+      likes: 10,
+      __v: 0,
+    },
+  ]
 
   test('when list is empty, returns null', () => {
-    const result = listHelper.favoriteBlog([]);
-    assert.strictEqual(result, null);
-  });
+    const result = listHelper.favoriteBlog([])
+    assert.strictEqual(result, null)
+  })
 
   test('when list has only one blog, it is the favorite', () => {
-    const result = listHelper.favoriteBlog(listWithOneBlog);
+    const result = listHelper.favoriteBlog(listWithOneBlog)
     assert.deepStrictEqual(result, {
       title: 'Go To Statement Considered Harmful',
       author: 'Edsger W. Dijkstra',
       likes: 5,
-    });
-  });
+    })
+  })
 
   test('when list has multiple blogs, returns the one with most likes', () => {
-    const result = listHelper.favoriteBlog(listWithMultipleBlogs);
+    const result = listHelper.favoriteBlog(listWithMultipleBlogs)
     assert.deepStrictEqual(result, {
       title: 'Canonical string reduction',
       author: 'Edsger W. Dijkstra',
       likes: 12,
-    });
-  });
-});
+    })
+  })
+
+  test('when list has a tie in likes, returns one of the tied blogs', () => {
+    const result = listHelper.favoriteBlog(listWithTieBlogs)
+    // Cualquiera de los blogs con 10 likes es válido
+    assert.ok(
+      result.title === 'Go To Statement Considered Harmful' ||
+        result.title === 'Canonical string reduction'
+    )
+  })
+})
