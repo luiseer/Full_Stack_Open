@@ -1,8 +1,10 @@
-const { test, describe} = require('node:test')
+const { test, describe } = require('node:test')
 const assert = require('node:assert')
-const express =require('express')
+const express = require('express')
 const mongoose = require('mongoose')
+const supertest = require('supertest')
 const app = require('../app')
+const api = supertest(app)
 const Blog = require('../models/blog')
 const listHelper = require('../utils/list_helper')
 
@@ -10,6 +12,13 @@ test('dummy returns one', () => {
   const blogs = []
   const result = listHelper.dummy(blogs)
   assert.strictEqual(result, 1)
+})
+
+test('blog are returned as json', async () => {
+   await api
+    .get('/api/blog')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
 })
 
 describe('total likes', () => {
@@ -153,7 +162,8 @@ describe('favorite blog', () => {
     // Cualquiera de los blogs con 10 likes es válido
     assert.ok(
       result.title === 'Go To Statement Considered Harmful' ||
-        result.title === 'Canonical string reduction'
+      result.title === 'Canonical string reduction'
     )
   })
 })
+
