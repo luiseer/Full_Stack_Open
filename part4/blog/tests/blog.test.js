@@ -8,6 +8,7 @@ const api = supertest(app)
 const Blog = require('../models/blog')
 const helper = require('./helper_test')
 const listHelper = require('../utils/list_helper')
+const { json } = require('node:stream/consumers')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
@@ -25,8 +26,6 @@ test('unique identifier property of blogs is named id', async () => {
   })
 })
 
-
-
 test('dummy returns one', () => {
   const blogs = []
   const result = listHelper.dummy(blogs)
@@ -38,6 +37,60 @@ test('blog are returned as json', async () => {
     .get('/api/blog')
     .expect(200)
     .expect('Content-Type', /application\/json/)
+})
+
+// test('a valid blog can be added', async () => {
+//   const newBlog = {
+//     title: "New Blog",
+//     author: "Test Author",
+//     url: "https://supertset.dev",
+//     likes: 3,
+//   }
+
+//   await api
+//     .post('/api/blog')
+//     .send(newBlog)
+//     .expect(201)
+//     .expect('Content-Type', /application\/json/)
+
+//   const blogsAtEnd = await helper.blogsInDb()
+
+//   // Usa expect en lugar de assert
+//   expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
+
+//   const titles = blogsAtEnd.map(blog => blog.title)
+//   expect(titles).toContain(newBlog.title) // Verifica si el título está en la lista
+// })
+
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    title: "New Blog",
+    author: "Test Author",
+    url: "https://supertest.dev",
+    likes: 3,
+  }
+
+  // Realiza una solicitud POST
+  const response = await api
+    .post('/api/blog') // Asegúrate de que la ruta sea correcta
+    .send(newBlog)
+    .expect(201) // Código de respuesta esperado
+    .expect('Content-Type', /application\/json/)
+
+  // Verifica que el blog fue agregado
+  const blogsAtEnd = await helper.blogsInDb() // Obtiene los blogs actuales desde la base de datos
+  assert.strictEqual(
+    blogsAtEnd.length,
+    helper.initialBlogs.length + 1,
+    'El número total de blogs no se incrementó en 1'
+  )
+
+  // Verifica que el nuevo blog esté en los resultados
+  const titles = blogsAtEnd.map((blog) => blog.title)
+  assert(
+    titles.includes(newBlog.title),
+    `El título "${newBlog.title}" no fue encontrado en los blogs`
+  )
 })
 
 describe('total likes', () => {
