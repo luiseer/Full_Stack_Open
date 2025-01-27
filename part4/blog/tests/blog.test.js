@@ -1,4 +1,4 @@
-const { test, describe } = require('node:test')
+const { test, describe, beforeEach, after } = require('node:test')
 const assert = require('node:assert')
 const express = require('express')
 const mongoose = require('mongoose')
@@ -6,7 +6,26 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const helper = require('./helper_test')
 const listHelper = require('../utils/list_helper')
+
+beforeEach(async () => {
+  await Blog.deleteMany({})
+  await Blog.insertMany(helper.initialBlogs)
+})
+
+test('unique identifier property of blogs is named id', async () => {
+  const response = await api.get('/api/blog')
+  const blogs = response.body
+
+  blogs.forEach((blog) => {
+    assert.ok(blog.id !== undefined) // Verifica que la propiedad id existe
+    assert.strictEqual(blog._id, undefined) // Verifica que _id no existe
+    assert.strictEqual(blog.__v, undefined) // Verifica que __v no existe
+  })
+})
+
+
 
 test('dummy returns one', () => {
   const blogs = []
@@ -15,7 +34,7 @@ test('dummy returns one', () => {
 })
 
 test('blog are returned as json', async () => {
-   await api
+  await api
     .get('/api/blog')
     .expect(200)
     .expect('Content-Type', /application\/json/)
@@ -167,3 +186,6 @@ describe('favorite blog', () => {
   })
 })
 
+after(async () => {
+  await mongoose.connection.close()
+})
