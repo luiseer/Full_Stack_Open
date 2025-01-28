@@ -16,7 +16,7 @@ beforeEach(async () => {
 })
 
 test('unique identifier property of blogs is named id', async () => {
-  const response = await api.get('/api/blog')
+  const response = await api.get('/api/blogs')
   const blogs = response.body
 
   blogs.forEach((blog) => {
@@ -34,33 +34,10 @@ test('dummy returns one', () => {
 
 test('blog are returned as json', async () => {
   await api
-    .get('/api/blog')
+    .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 })
-
-// test('a valid blog can be added', async () => {
-//   const newBlog = {
-//     title: "New Blog",
-//     author: "Test Author",
-//     url: "https://supertset.dev",
-//     likes: 3,
-//   }
-
-//   await api
-//     .post('/api/blog')
-//     .send(newBlog)
-//     .expect(201)
-//     .expect('Content-Type', /application\/json/)
-
-//   const blogsAtEnd = await helper.blogsInDb()
-
-//   // Usa expect en lugar de assert
-//   expect(blogsAtEnd.length).toBe(helper.initialBlogs.length + 1)
-
-//   const titles = blogsAtEnd.map(blog => blog.title)
-//   expect(titles).toContain(newBlog.title) // Verifica si el título está en la lista
-// })
 
 test('a valid blog can be added', async () => {
   const newBlog = {
@@ -69,22 +46,18 @@ test('a valid blog can be added', async () => {
     url: "https://supertest.dev",
     likes: 3,
   }
-
-  // Realiza una solicitud POST
-  const response = await api
-    .post('/api/blog') // Asegúrate de que la ruta sea correcta
+  await api
+    .post('/api/blogs')
     .send(newBlog)
-    .expect(201) // Código de respuesta esperado
+    .expect(201)
     .expect('Content-Type', /application\/json/)
-
   // Verifica que el blog fue agregado
-  const blogsAtEnd = await helper.blogsInDb() // Obtiene los blogs actuales desde la base de datos
+  const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(
     blogsAtEnd.length,
     helper.initialBlogs.length + 1,
     'El número total de blogs no se incrementó en 1'
   )
-
   // Verifica que el nuevo blog esté en los resultados
   const titles = blogsAtEnd.map((blog) => blog.title)
   assert(
@@ -92,6 +65,64 @@ test('a valid blog can be added', async () => {
     `El título "${newBlog.title}" no fue encontrado en los blogs`
   )
 })
+
+
+describe('Blog controller tests', () => {
+
+  // Prueba para actualizar un blog
+  test('a blog can be updated', async () => {
+    // Primero obtenemos un blog existente desde la base de datos
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0] // Usamos el primer blog
+
+    // Datos que vamos a actualizar
+    const updatedBlogData = {
+      title: 'Updated Blog Title',
+      author: 'Updated Author',
+      url: 'https://updated-url.dev',
+      likes: 10,
+    }
+
+    // Realizamos la solicitud PUT
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlogData)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    // Verificamos que el blog fue actualizado correctamente
+    assert.strictEqual(response.body.title, updatedBlogData.title)
+    assert.strictEqual(response.body.author, updatedBlogData.author)
+    assert.strictEqual(response.body.url, updatedBlogData.url)
+    assert.strictEqual(response.body.likes, updatedBlogData.likes)
+
+    // Verificamos que la base de datos tiene los cambios
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd.find(blog => blog.id === blogToUpdate.id)
+    assert.strictEqual(updatedBlog.title, updatedBlogData.title)
+  })
+})
+
+describe('Blog controller tests', () => {
+
+  // Prueba para eliminar un blog
+  test('a blog can be deleted', async () => {
+    // Primero obtenemos los blogs en la base de datos
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0] // Usamos el primer blog
+
+    // Realizamos la solicitud DELETE
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204) // Esperamos un status 204 sin contenido
+
+    // Verificamos que el blog fue eliminado
+    const blogsAtEnd = await helper.blogsInDb()
+    const deletedBlog = blogsAtEnd.find(blog => blog.id === blogToDelete.id)
+    assert.strictEqual(deletedBlog, undefined) // Aseguramos que el blog ya no exista
+  })
+})
+
 
 describe('total likes', () => {
   const listWithOneBlog = [
