@@ -66,6 +66,9 @@ test('a valid blog can be added', async () => {
   )
 })
 
+test('blog without content si not added', async () => {
+  
+})
 
 describe('Blog controller tests', () => {
 
