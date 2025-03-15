@@ -1,24 +1,25 @@
 const express = require('express')
 const cors = require('cors')
-require('express-async-errors')
-const app = express()
-const mongoose = require('mongoose')
-const blogRouter = require('./controllers/blog')
-const config = require('./utils/config')
-const logger = require('./utils/logger')
+require('express-async-errors') // Cargar antes de las rutas
+const connectDB = require('./utils/db')
 const errorHandler = require('./utils/errorHandler')
+const blogRouter = require('./controllers/blog')
+const userRouter = require('./controllers/users')
 
+const app = express()
 
+// Conectar a MongoDB
+connectDB()
 
-mongoose.connect(config.MONGODB_URI)
-    .then(() => logger.info('Connecteed to Mongo_DB'))
-    .catch(error => logger.error('Error connecting to MongoDB'))
-
-
+// Middlewares
 app.use(cors())
 app.use(express.json())
-app.use('/api/blogs', blogRouter)
 
+// Rutas
+app.use('/api/blogs', blogRouter)
+app.use('/api/users', userRouter)
+
+// Middleware de manejo de errores
 app.use(errorHandler)
 
 module.exports = app

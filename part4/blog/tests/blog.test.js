@@ -53,17 +53,18 @@ test('a valid blog can be added', async () => {
     .expect('Content-Type', /application\/json/)
   // Verifica que el blog fue agregado
   const blogsAtEnd = await helper.blogsInDb()
+
+  const titles = blogsAtEnd.map((blog) => blog.title)
+  assert(
+    titles.includes(newBlog.title),
+    `El título "${newBlog.title}" no fue encontrado en los blogs`
+  )
   assert.strictEqual(
     blogsAtEnd.length,
     helper.initialBlogs.length + 1,
     'El número total de blogs no se incrementó en 1'
   )
   // Verifica que el nuevo blog esté en los resultados
-  const titles = blogsAtEnd.map((blog) => blog.title)
-  assert(
-    titles.includes(newBlog.title),
-    `El título "${newBlog.title}" no fue encontrado en los blogs`
-  )
 })
 
 test('blog without content si not added', async () => {
