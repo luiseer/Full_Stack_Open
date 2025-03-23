@@ -1,7 +1,9 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')  
 const User = require('../models/user') 
+const { tokenExtractor, tokenValidator } = require('../utils/auth')  // Importamos los middlewares de autenticación
 
+// Obtener todos los blogs
 blogRouter.get('/', async (req, res) => {
     try {
         const blogs = await Blog
@@ -14,9 +16,8 @@ blogRouter.get('/', async (req, res) => {
     }
 })
 
-
+// Obtener un blog específico por ID
 blogRouter.get('/:id', async (req, res) => {
-
     const blog = await Blog.findById(req.params.id)
 
     if (blog) {
@@ -26,7 +27,8 @@ blogRouter.get('/:id', async (req, res) => {
     }
 })
 
-blogRouter.post('/', async (req, res) => {
+// Crear un nuevo blog (requiere autenticación)
+blogRouter.post('/', tokenExtractor, tokenValidator, async (req, res) => {
     const { title, author, url, likes } = req.body
 
     if (!title || !author || !url) {
@@ -34,31 +36,30 @@ blogRouter.post('/', async (req, res) => {
     }
 
     try {
-        
+        // El usuario autenticado es quien crea el blog
         const blog = new Blog({
             title,
             author,
             url,
-            likes: likes || 0, // Si no se pasa "likes", se asigna 0
+            likes: likes || 0,
+            user: req.user.id  // Asociamos el blog al usuario autenticado
         })
 
-        // Guardar el blog en la base de datos
         const savedBlog = await blog.save()
 
-        // Agregar el blog al campo 'blogs' del usuario
-        const user = await User.findById(author)
-        user.blogs = user.blogs.concat(savedBlog._id)  // Agregar el ID del nuevo blog al array 'blogs'
+        // Agregar el blog al array de blogs del usuario
+        const user = await User.findById(req.user.id)
+        user.blogs = user.blogs.concat(savedBlog._id)
         await user.save()
 
         res.status(201).json(savedBlog)
     } catch (error) {
-       
         res.status(400).json({ error: error.message })
     }
 })
 
-
-blogRouter.put('/:id', async (req, res) => {
+// Actualizar un blog (requiere autenticación)
+blogRouter.put('/:id', tokenExtractor, tokenValidator, async (req, res) => {
     const { title, author, url, likes } = req.body
 
     if (!title || !author || !url) {
@@ -72,7 +73,7 @@ blogRouter.put('/:id', async (req, res) => {
                 title,
                 author,
                 url,
-                likes: likes || 0, // Si no se pasa "likes", se asigna 0
+                likes: likes || 0,
             },
             {
                 new: true,
@@ -90,16 +91,21 @@ blogRouter.put('/:id', async (req, res) => {
     }
 })
 
-blogRouter.delete('/:id', async (req, res) => {
+// Eliminar un blog (requiere autenticación)
+blogRouter.delete('/:id', tokenExtractor, tokenValidator, async (req, res) => {
     const blog = await Blog.findById(req.params.id)
 
     if (!blog) {
         return res.status(404).json({ error: 'Blog not found' })
     }
 
+    if (blog.user.toString() !== req.user.id) {
+        // Solo el usuario que creó el blog puede eliminarlo
+        return res.status(403).json({ error: 'Forbidden: You can only delete your own blogs' })
+    }
+
     await Blog.findByIdAndDelete(req.params.id)
     res.status(204).end()
 })
-
 
 module.exports = blogRouter

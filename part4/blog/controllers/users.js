@@ -24,7 +24,7 @@ userRouter.post('/', async (req, res) => {
     }
 
     if (password.length < 3) {
-        return res.status(400).json({ error: 'La contraseña debe tener al menos 3 caracteres' })
+        return res.status(400).json({ error: 'The password must be at least 3 characters long' })
     }
     const saltRounds = 10 //magic number
     const passwordHash = await bcrypt.hash(password, saltRounds)
