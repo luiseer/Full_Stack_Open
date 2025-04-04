@@ -1,9 +1,8 @@
 const Blog = ({ blog }) => {
   return (
     <div>
-      <h3>Title: {blog.title}</h3>
-      <p>Author: {blog.author.username}</p>
-      <p>URL: {blog.url}</p>
+      <h3>Blog</h3>
+      <li>Title: {blog.title} Author: {blog.author.username} URL: {blog.url}</li>
     </div>
   );
 };

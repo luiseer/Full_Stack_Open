@@ -7,7 +7,6 @@ const LoginForm = ({
 }) => (
     <form onSubmit={handleSubmit}>
         <div>
-            <h3>Login in to application</h3>
             <label htmlFor="username">Username</label>
             <input
                 id="username"
