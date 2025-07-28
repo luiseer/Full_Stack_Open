@@ -1,8 +1,6 @@
 .env
 node_modules
 
-package-lock.json
-package.json
 logs
 *.log
 npm-debug.log*
